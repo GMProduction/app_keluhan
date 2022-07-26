@@ -131,7 +131,6 @@ class _HomePageState extends State<HomePage> {
     dataKeluhan = await req.getApi("keluhan");
 
     print("DATA $dataKeluhan");
-    print("length" + dataKeluhan.length.toString());
 
     setState(() {});
   }

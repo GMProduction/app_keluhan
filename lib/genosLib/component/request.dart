@@ -151,9 +151,29 @@ class GenRequest {
     }
   }
 
+  postFormWoAuth(portal, data) async {
+    print("data" +data.toString());
+
+    try {
+      String path = "$ip/api/$portal";
+      print(path);
+      Response response = await Dio().post(path,
+          data: FormData.fromMap(data),
+          options: Options(
+              followRedirects: false,
+              // will not throw errors
+              validateStatus: (status) => true,
+              contentType: 'multipart/form-data'));
+
+      return response.data;
+    } catch (e) {
+      // return {"code": e.toString(), "msg": e.toString()};
+      return "sukses";
+    }
+  }
+
   postRegisterForm(portal, data) async {
     try {
-      var token = await getPrefferenceToken();
       String path = "$ip/api/$portal";
       print(path);
       Response response = await Dio().post(path,
@@ -166,7 +186,7 @@ class GenRequest {
               contentType: 'multipart/form-data'));
 
       return response.data;
-    } catch (e) {
+    } on DioError catch (e) {
       return {"code": e.toString(), "msg": e.toString()};
     }
   }
@@ -181,8 +201,8 @@ class GenRequest {
               contentType: 'multipart/form-data'));
 
       return response.data;
-    } catch (e) {
-      return {"code": 500};
+    } on DioError catch (e) {
+      return {"code": e};
     }
   }
 
@@ -202,14 +222,24 @@ class GenRequest {
               }, contentType: 'multipart/form-data'));
 
       return response.data;
-    } catch (e) {
-      return {"code": e.toString()};
+    } on DioError catch (e) {
+
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        print(e.response.toString());
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print(e.requestOptions);
+        print(e.message);
+      }
+
+      return "error";
     }
   }
 
   postApi(portal, Map<dynamic, dynamic> data) async {
     try {
-      var token = await getPrefferenceToken();
       print("data" +data.toString());
 
       print("ipnya "+ip + "/api/" + portal);
@@ -218,8 +248,19 @@ class GenRequest {
           options: Options(headers: {'Accept': 'application/json'}));
 
       return response.data;
-    } catch (e) {
-      return {"code": e.toString()};
+    } on DioError catch (e) {
+
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        print(e.response.toString());
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print(e.requestOptions);
+        print(e.message);
+      }
+
+      return "error";
     }
   }
 

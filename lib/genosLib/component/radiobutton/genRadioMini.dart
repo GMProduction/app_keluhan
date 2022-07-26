@@ -65,19 +65,20 @@ class _GenRadioGroupMiniState extends State<GenRadioGroupMini> {
             ),
             Row(
               children: widget.listData.map<Widget>((e) {
+                print("e nya "+ e.toString());
                 int index = e[widget.id];
 
                 return initValue == index
                     ? Container(
                   padding:
-                  widget.padding ?? EdgeInsets.all(0.03),
+                  widget.padding ?? EdgeInsets.all(20),
                   margin: EdgeInsets.only(
-                      right: 0.02, bottom: 0.02, top: 5.h),
+                      right: 20, bottom: 20, top: 5),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(widget.radius),
                       color: GenColor.primaryColor,
                       boxShadow: GenShadow().genShadow(
-                          radius: 3.w, offset: Offset(0, 2.w))),
+                          radius: 30, offset: Offset(0, 20))),
                   child: Center(
                     child: GenText(
                       e[widget.title],
@@ -98,9 +99,9 @@ class _GenRadioGroupMiniState extends State<GenRadioGroupMini> {
                     },
                     child: Container(
                       padding:
-                      widget.padding ?? EdgeInsets.all(0.03),
+                      widget.padding ?? EdgeInsets.all(30),
                       margin: EdgeInsets.only(
-                          right: 0.02, bottom: 0.02, top: 5.h),
+                          right: 20, bottom: 20, top: 5),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(widget.radius),
                           boxShadow: GenShadow().genShadow(),
@@ -127,10 +128,10 @@ class _GenRadioGroupMiniState extends State<GenRadioGroupMini> {
                 ? initValue == index
                 ? Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 margin: EdgeInsets.only(
-                    right: 0.02, bottom: 0.02, top: 5.h),
-                height: 80.h,
+                    right: 20, bottom: 20, top: 5),
+                height: 80,
                 decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(

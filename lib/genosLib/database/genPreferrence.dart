@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future setPrefferenceToken(String value) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('token', value);
+
+  print("token tersimpan");
 }
 
 Future getPrefferenceToken() async {

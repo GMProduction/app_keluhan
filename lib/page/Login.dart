@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../genosLib/component/genToast.dart';
 import '../genosLib/component/request.dart';
+import '../genosLib/database/genPreferrence.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -11,7 +13,9 @@ class _LoginPageState extends State<LoginPage> {
 
   final req = new GenRequest();
   var dataLogin;
+  var username, password;
 
+  bool readytohit = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,6 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextField(
+                          onChanged: (val){username = val;},
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             filled: true,
@@ -103,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                           height: 20.0,
                         ),
                         TextField(
+                          onChanged: (val){password = val;},
                           obscureText: true,
                           decoration: InputDecoration(
                             filled: true,
@@ -139,8 +145,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         Container(
                           width: double.infinity,
-                          child: RaisedButton(
-                            onPressed: () {},
+                          child: !readytohit ? Center(child: CircularProgressIndicator()) : RaisedButton(
+                            onPressed: () {
+                              Login(context);
+                            },
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
@@ -176,15 +184,45 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void Login() async {
-    dataLogin = await req.postFormWoApi("login",
-        {
-          "username" : "nama",
-          "password" : "password"
-        }
-    );
+  void Login(context) async {
+
+    setState((){
+      readytohit = false;
+
+    });
+
+    if(username != null && password != null){
+      dataLogin = await req
+          .postFormWoAuth("login",
+          {
+            "username": username,
+            "password": password,
+          });
+
+      setState((){
+        readytohit = true;
+
+      });
+
+      print("data Login " +dataLogin["status"].toString());
+      if(dataLogin["status"] == 200){
+        setPrefferenceToken(dataLogin["payload"]["access_token"]);
+        Navigator.popAndPushNamed(context, "home");
+      }else{
+        toastShow("Username / Password salah", context, Colors.black);
+      }
+
+    }else{
+      toastShow("Cek lagi inputanmu", context, Colors.black);
+
+      setState((){
+        readytohit = true;
+
+      });
+    }
+
 
     print("DATA $dataLogin");
-    print("length" + dataLogin.length.toString());
+    // print("length" + dataLogin.length.toString());
   }
 }

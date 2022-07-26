@@ -1,22 +1,17 @@
 
 import 'dart:io';
 
-import 'package:card_swiper/card_swiper.dart';
-import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:keluhan/genosLib/component/padding/commonPadding.dart';
 import 'package:keluhan/genosLib/component/textfiled/TextField.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../genosLib/component/button/genButton.dart';
-import '../genosLib/component/card/genCard.dart';
-import '../genosLib/component/etc/genDimen.dart';
-import '../genosLib/component/etc/genRow.dart';
-import '../genosLib/component/etc/genShadow.dart';
+import '../genosLib/component/genToast.dart';
 import '../genosLib/component/page/genPage.dart';
-import '../genosLib/genColor.dart';
+import '../genosLib/component/request.dart';
 import '../genosLib/genText.dart';
 
 class MasukanKeluhan extends StatefulWidget {
@@ -30,6 +25,8 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
 
   XFile? _image;
   final _picker = ImagePicker();
+
+  var readyToHit = true;
 
   Future<XFile?> pickImage() async {
     final _picker = ImagePicker();
@@ -65,6 +62,11 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
       // _handleError(response.exception);
     }
   }
+
+
+  final req = new GenRequest();
+  var dataKeluhan, deskripsi;
+  bool loaded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +153,7 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
                     ),
                     CommonPadding(
                       child: TextLoginField(
+                        onChanged: (val){ deskripsi = val;},
                         label: "Keterangan",
                       ),
                     )
@@ -166,9 +169,11 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
 
 
 
-                  GenButton(
+                  !readyToHit ? Center(child: CircularProgressIndicator(),) :  GenButton(
                     text: "Submit",
-                    ontap: () {},
+                    ontap: () {
+                      MasukanKeluhan(_image);
+                    },
                   ),
                 ],
               ),
@@ -178,4 +183,46 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
       ),
     );
   }
+
+
+  void MasukanKeluhan(gambar1) async {
+
+    setState(() {
+      readyToHit = false;
+    });
+
+    String fileName = gambar1.path.split('/').last;
+
+    if(deskripsi != null){
+      dataKeluhan = await req
+          .postApiAuth("keluhan",
+          {
+            "gambar": await MultipartFile.fromFile(gambar1.path, filename: fileName),
+            "deskripsi": deskripsi,
+          });
+
+      print(dataKeluhan);
+
+      if(dataKeluhan["status"] == 200){
+        toastShow("Keluhan berhasil di upload", context, Colors.black);
+        Navigator.popAndPushNamed(context, "home");
+      }else{
+        toastShow("Username / Password salah", context, Colors.black);
+      }
+
+
+
+
+      // Navigator.popAndPushNamed(context, "home");
+    }else{
+      setState(() {
+        readyToHit = true;
+      });
+      toastShow("Deskripsi belum diisi", context, Colors.black);
+    }
+
+    print("DATA $dataKeluhan");
+    print("length" + dataKeluhan.length.toString());
+  }
+
 }
