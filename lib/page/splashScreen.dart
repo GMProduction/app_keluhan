@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:keluhan/genosLib/database/genPreferrence.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../genosLib/genColor.dart';
@@ -52,24 +53,23 @@ class _SplashScreenState extends State<SplashScreen>
 
   }
 
-  startSplashScreen()  {
+  startSplashScreen() async {
     cekLogin();
 
-    // var token = await getPrefferenceToken();
-    // // var token = "asw";
-    // if (token) {
-    //   var duration = const Duration(milliseconds: 2000);
-    //   return Timer(duration, () {
-    //     Navigator.pushReplacementNamed(context, "loginPage");
-    //   });
-    // } else {
-    //   var duration = const Duration(milliseconds: 2000);
-    //   return Timer(duration, () {
-    //     // Navigator.pushReplacementNamed(
-    //     //     context, "welcome");
-    //     Navigator.pushReplacementNamed(context, "base");
-    //   });
-    // }
+    var token = await getPrefferenceToken();
+    if (token == null) {
+      var duration = const Duration(milliseconds: 2000);
+      return Timer(duration, () {
+        Navigator.pushReplacementNamed(context, "loginPage");
+      });
+    } else {
+      var duration = const Duration(milliseconds: 2000);
+      return Timer(duration, () {
+        // Navigator.pushReplacementNamed(
+        //     context, "welcome");
+        Navigator.pushReplacementNamed(context, "home");
+      });
+    }
   }
 
   startAnim(){

@@ -2,12 +2,14 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:keluhan/genosLib/component/JustHelper.dart';
 
 import '../genosLib/component/card/genCard.dart';
 import '../genosLib/component/etc/genDimen.dart';
 import '../genosLib/component/etc/genRow.dart';
 import '../genosLib/component/etc/genShadow.dart';
 import '../genosLib/component/page/genPage.dart';
+import '../genosLib/component/request.dart';
 import '../genosLib/genColor.dart';
 import '../genosLib/genText.dart';
 import 'menuNavbar.dart';
@@ -20,12 +22,17 @@ class ProsesPage extends StatefulWidget {
 }
 
 class _ProsesPageState extends State<ProsesPage> {
-
-
-  int _currentIndex = 0;
+  final req = new GenRequest();
+  var dataKeluhan;
+  bool isLoaded = false;
 
   @override
   Widget build(BuildContext context) {
+    if (!isLoaded) {
+      isLoaded = true;
+      getDataKeluhan();
+    }
+
     return GenPage(
       appbar: Container(
         width: double.infinity,
@@ -70,7 +77,6 @@ class _ProsesPageState extends State<ProsesPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-
               RowSpaceBetween(
                 chilidLeft: GenText(
                   "Keluhan yang kamu ajukan",
@@ -88,21 +94,17 @@ class _ProsesPageState extends State<ProsesPage> {
               SizedBox(
                 height: GenDimen.afterTitle,
               ),
-
               Column(
-                children: [
-                  GenCardArtikel(
-                    ontap: (){Navigator.pushNamed(context, "detail");}                    ,
-                    judul: "Kantin Terlalu Rame",
-                    isi: "Kantin di siang hari terlalu rame",
-                    harga: "pending",
-                    gambar:
-                    "https://goukm.id/wp-content/uploads/2016/07/jualan-kantin-sekolah-goukm-696x393.jpg",
-                  ),
 
-
-                ],
-              ),
+                  children: dataKeluhan == null ? [Center(child: CircularProgressIndicator()) ] : dataKeluhan["payload"].map<Widget>((e) {
+                    return GenCardArtikel(
+                      // ontap: (){Navigator.pushNamed(context, "detail");}                    ,
+                      judul: formatTanggalFromString(e["tanggal"]!),
+                      isi: e["deskripsi"],
+                      harga: e["status"],
+                      gambar: ip+e["gambar"],
+                    );
+                  }).toList()),
               SizedBox(
                 height: 100,
               ),
@@ -111,5 +113,13 @@ class _ProsesPageState extends State<ProsesPage> {
         ),
       ),
     );
+  }
+
+  void getDataKeluhan() async {
+    dataKeluhan = await req.getApi("keluhan");
+
+    print("DATA $dataKeluhan");
+
+    setState(() {});
   }
 }

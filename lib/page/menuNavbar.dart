@@ -8,7 +8,6 @@ class MenuNavbar {
 }
 
 const List<MenuNavbar> allDestinations = <MenuNavbar>[
-  MenuNavbar('Home', Icons.home_outlined),
   MenuNavbar('Proses', Icons.assignment),
   MenuNavbar('History', Icons.access_time),
   MenuNavbar('Akun Saya', Icons.account_box_outlined)

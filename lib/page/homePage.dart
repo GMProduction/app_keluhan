@@ -2,6 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:keluhan/genosLib/component/JustHelper.dart';
 
 import '../genosLib/component/card/genCard.dart';
 import '../genosLib/component/etc/genDimen.dart';
@@ -21,13 +22,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final req = new GenRequest();
   var dataKeluhan;
   bool isLoaded = false;
+
   @override
   Widget build(BuildContext context) {
-
     if (!isLoaded) {
       isLoaded = true;
       getDataKeluhan();
@@ -77,7 +77,6 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-
               RowSpaceBetween(
                 chilidLeft: GenText(
                   "Keluhan yang kamu ajukan",
@@ -95,28 +94,17 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: GenDimen.afterTitle,
               ),
-
               Column(
-                children: [
-                  GenCardArtikel(
-                    ontap: (){Navigator.pushNamed(context, "detail");}                    ,
-                    judul: "Kantin Terlalu Rame",
-                    isi: "Kantin di siang hari terlalu rame",
-                    harga: "pending",
-                    gambar:
-                    "https://goukm.id/wp-content/uploads/2016/07/jualan-kantin-sekolah-goukm-696x393.jpg",
-                  ),
-                  GenCardArtikel(
-                    ontap: (){Navigator.pushNamed(context, "detail");},
-                    judul: "Kursi Rusak",
-                    isi: "Kursi rusak di ruang praktik komputer",
-                    harga: "Selesai",
-                    gambar:
-                    "https://assets-a1.kompasiana.com/items/album/2015/11/12/img-20151110-161648-5643c5308923bd3905dbe277.jpg",
-                  ),
 
-                ],
-              ),
+                  children: dataKeluhan == null ? [Center(child: CircularProgressIndicator()) ] : dataKeluhan["payload"].map<Widget>((e) {
+                return GenCardArtikel(
+                  // ontap: (){Navigator.pushNamed(context, "detail");}                    ,
+                  judul: formatTanggalFromString(e["tanggal"]!),
+                  isi: e["deskripsi"],
+                  harga: e["status"],
+                  gambar: ip+e["gambar"],
+                );
+              }).toList()),
               SizedBox(
                 height: 100,
               ),
