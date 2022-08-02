@@ -95,16 +95,19 @@ class _HistoryPageState extends State<HistoryPage> {
                 height: GenDimen.afterTitle,
               ),
               Column(
-
-                  children: dataKeluhan == null ? [Center(child: CircularProgressIndicator()) ] : dataKeluhan["payload"].map<Widget>((e) {
-                    return GenCardArtikel(
-                      // ontap: (){Navigator.pushNamed(context, "detail");}                    ,
-                      judul: formatTanggalFromString(e["tanggal"]!),
-                      isi: e["deskripsi"],
-                      harga: e["status"],
-                      gambar: ip+e["gambar"],
-                    );
-                  }).toList()),
+                  children: dataKeluhan == null
+                      ? [Center(child: CircularProgressIndicator())]
+                      : dataKeluhan["payload"].map<Widget>((e) {
+                          return GenCardArtikel(
+                            // ontap: (){Navigator.pushNamed(context, "detail");}                    ,
+                            judul: formatTanggalFromString(e["tanggal"]!),
+                            isi: e["deskripsi"],
+                            harga: e["status"],
+                            gambar: e['gambar'] != null
+                                ? ip + e["gambar"].toString()
+                                : 'https://bodybigsize.com/wp-content/uploads/2020/02/noimage-8.png',
+                          );
+                        }).toList()),
               SizedBox(
                 height: 100,
               ),

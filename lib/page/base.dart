@@ -23,14 +23,9 @@ class Base extends StatefulWidget {
 }
 
 class _BaseState extends State<Base> {
-
   int _currentIndex = 0;
 
-  final _widgetOptions = [
-    ProsesPage(),
-    HistoryPage(),
-    HomePage()
-  ];
+  final _widgetOptions = [HomePage(), ProsesPage(), HistoryPage(), HomePage()];
 
   @override
   Widget build(BuildContext context) {
