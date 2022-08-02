@@ -103,7 +103,7 @@ class _SplashScreenState extends State<SplashScreen>
                   duration: Duration(milliseconds: 1000),
                   opacity: opacity,
                   child: Image.asset(
-                    'assets/images/logo.png',
+                    'assets/icons/UNDHA.png',
                     width: 300,
                     fit: BoxFit.fitWidth,
                   ),

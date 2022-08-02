@@ -3,6 +3,7 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:keluhan/genosLib/component/JustHelper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../genosLib/component/card/genCard.dart';
 import '../genosLib/component/etc/genDimen.dart';
@@ -38,38 +39,32 @@ class _ProsesPageState extends State<ProsesPage> {
         width: double.infinity,
         child: Column(
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Container(
-                  width: 100,
-                  height: 100,
-                  child: Center(
-                      child: InkWell(
-                          onTap: () {
-                            // Navigator.of(context).pop();
-                          },
-                          child: Image.asset(
-                            "assets/icons/menu_icon.png",
-                            color: Colors.black87,
-                          )))),
-              Container(
-                  width: 80,
-                  height: 80,
-                  child: Center(
-                      child: InkWell(
-                          onTap: () {
-                            // Navigator.of(context).pop();
-                          },
-                          child: CircleAvatar(
-                            radius: 20.0,
-                            child: Image.network(
-                                "https://cdn0.iconfinder.com/data/icons/google-material-design-3-0/48/ic_account_circle_48px-512.png"),
-                            backgroundColor: Colors.transparent,
-                          )))),
-              // GenText(
-              //   "QR Code",
-              //   style: TextStyle(color: Colors.black87, fontSize: 35),
-              // )
-            ]),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 80,
+                    margin: EdgeInsets.only(left: 20),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Aplikasi Keluhan",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      logout(context);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(Icons.logout),
+                    ),
+                  )
+                ]),
           ],
         ),
       ),
@@ -124,5 +119,11 @@ class _ProsesPageState extends State<ProsesPage> {
     print("DATA $dataKeluhan");
 
     setState(() {});
+  }
+
+  void logout(BuildContext context) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.remove("token");
+    Navigator.popAndPushNamed(context, "login");
   }
 }

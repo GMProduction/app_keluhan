@@ -1,4 +1,4 @@
-
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -22,7 +22,6 @@ class MasukanKeluhan extends StatefulWidget {
 }
 
 class _MasukanKeluhanState extends State<MasukanKeluhan> {
-
   XFile? _image;
   final _picker = ImagePicker();
 
@@ -32,7 +31,7 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
     final _picker = ImagePicker();
 
     final XFile? pickedFile =
-    await _picker.pickImage(source: ImageSource.camera);
+        await _picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
       print('PickedFile: ${pickedFile.toString()}');
@@ -62,7 +61,6 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
       // _handleError(response.exception);
     }
   }
-
 
   final req = new GenRequest();
   var dataKeluhan, deskripsi;
@@ -143,17 +141,19 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
                     ),
                     _image == null
                         ? Container(
-                      width: 0,
-                      height: 0,
-                    )
+                            width: 0,
+                            height: 0,
+                          )
                         : Image.file(
-                      File(_image!.path),
-                      width: 150,
-                      fit: BoxFit.fitWidth,
-                    ),
+                            File(_image!.path),
+                            width: 150,
+                            fit: BoxFit.fitWidth,
+                          ),
                     CommonPadding(
                       child: TextLoginField(
-                        onChanged: (val){ deskripsi = val;},
+                        onChanged: (val) {
+                          deskripsi = val;
+                        },
                         label: "Keterangan",
                       ),
                     )
@@ -166,15 +166,16 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-
-
-
-                  !readyToHit ? Center(child: CircularProgressIndicator(),) :  GenButton(
-                    text: "Submit",
-                    ontap: () {
-                      MasukanKeluhan(_image);
-                    },
-                  ),
+                  !readyToHit
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : GenButton(
+                          text: "Submit",
+                          ontap: () {
+                            MasukanKeluhan(_image);
+                          },
+                        ),
                 ],
               ),
             )
@@ -184,37 +185,41 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
     );
   }
 
-
   void MasukanKeluhan(gambar1) async {
-
     setState(() {
       readyToHit = false;
     });
-
-    String fileName = gambar1.path.split('/').last;
-
-    if(deskripsi != null){
-      dataKeluhan = await req
+    if (deskripsi != null) {
+      if(gambar1 != null) {
+        String fileName = gambar1.path.split('/').last;
+        dataKeluhan = await req
           .postApiAuth("keluhan",
           {
             "gambar": await MultipartFile.fromFile(gambar1.path, filename: fileName),
             "deskripsi": deskripsi,
           });
+      }else {
+        dataKeluhan = await req
+          .postApiAuth("keluhan",
+          {
+            "deskripsi": deskripsi,
+          });
+      }
+      
 
+      // var a = MultipartFile.fromFile(gambar1.path, filename: fileName);
+      
       print(dataKeluhan);
 
-      if(dataKeluhan["status"] == 200){
+      if (dataKeluhan["status"] == 200) {
         toastShow("Keluhan berhasil di upload", context, Colors.black);
         Navigator.popAndPushNamed(context, "home");
-      }else{
+      } else {
         toastShow("Username / Password salah", context, Colors.black);
       }
 
-
-
-
       // Navigator.popAndPushNamed(context, "home");
-    }else{
+    } else {
       setState(() {
         readyToHit = true;
       });
@@ -224,5 +229,4 @@ class _MasukanKeluhanState extends State<MasukanKeluhan> {
     print("DATA $dataKeluhan");
     print("length" + dataKeluhan.length.toString());
   }
-
 }
